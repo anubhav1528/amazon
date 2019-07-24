@@ -18,6 +18,12 @@ server.post('/add',(req,res)=>{
         users : userService._add(req.body)
     }));
 });
+server.post('/email',(req,res)=>{
+    setContentHeader(res);
+    res.end(JSON.stringify({
+        users : userService.email(req.body)
+    }));
+});
 server.post('/update',(req,res)=>{
     setContentHeader(res);
     res.end(JSON.stringify({

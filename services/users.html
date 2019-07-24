@@ -3,8 +3,9 @@
         <title>
             Users Page
         </title>
-        <script type="text/javascript">
+        <script type="text/javascript">       
         let string;
+        let total=0;
         const getUsers = ()=>{
             const _url = 'http://localhost:1269/users/';
             fetch(_url,{
@@ -16,13 +17,14 @@
             .then(res=>res.json())
             .then(users=>{
                 createTable(users);
-            })
-            
+            })      
         }
+
         const updateuser = (string,string1,string2,string3
         ,string4,string5,string6,string7)=>{
             const baseUrl = 'http://localhost:1269/users';
             let value=parseInt(document.getElementById(`textfield${string}`).value);
+            document.getElementById(`textfield${string}`).value=0;
             num=value;
             if(num % 2==1){
                 fetch(baseUrl+'/update',{
@@ -51,7 +53,7 @@
                         })
                 })
                 .then(response=>response.json())
-            console.log(string,string1,string2,string3,string4,string5,string6,string7);}
+            }
                 if(num % 2==0){
                     fetch(baseUrl+'/update',{
                     method : 'POST',
@@ -79,10 +81,12 @@
                         })
                 })
                 .then(response=>response.json())
-                console.log(string,string1,string2,string3,string4,string5,string6,string7);
                 }
                 const _urlpro = 'http://localhost:1269/projects';
+                let price1=parseInt(string3);
                 let price=parseInt(value)*parseInt(string3);
+                total=total+price;
+                document.getElementById('buy').value=total;
                 fetch(_urlpro+'/add',{
                     method : 'POST',
                     headers:{
@@ -92,41 +96,36 @@
                     },
                     body:JSON.stringify({
                         ITEMNAME:string2,
-     SUBITEM: {
          SUBITME:{
              SUBITEMNAME: string1,
              QUANTITY : value,
-             PRICE : price
+             PRICE : price1
          }
-     }
+     
                         })
                 })
             .then(res=>res.json())
-            .then(projects=>{
-                console.log(projects)
-                createTableprojects(projects);
-            })
-            
         }
+
         const createTable = (data)=>{
             let rows = '';
             data.users.forEach(u => {
                 rows += `<tr>
                             <td>${u.ITEMNAME}-</td>
                             <tr><td>${u.SUBITEM.SUBITME1.SUBITEMNAME}  PRICE-${u.SUBITEM.SUBITME1.PRICE}
-                            <input id="edit1" type="button" name="edit" value="+" onclick="myplusfunction('${u.SUBITEM.SUBITME1.id}')">
-                            <input id="edit1" type="button" name="edit" value="-" onclick="myminusfunction('${u.SUBITEM.SUBITME1.id}')">
+                            <input id="edit1" type="button" name="edit" value="+" onclick="myplusfunction('${u.SUBITEM.SUBITME1.id}','${u.SUBITEM.SUBITME1.PRICE}')">
+                            <input id="edit1" type="button" name="edit" value="-" onclick="myminusfunction('${u.SUBITEM.SUBITME1.id}','${u.SUBITEM.SUBITME1.PRICE}')">
                             <input id='textfield${u.SUBITEM.SUBITME1.id}' type="number" name="textfield" width="1" value="0" min="0">VALUE</input>
-                            <input id="addtocart" type="button" name="addtocart" value="ADD TO CART" onclick="updateuser
+                            <input id="addtocart${u.SUBITEM.SUBITME1.id}" type="button" disabled name="addtocart" value="ADD TO CART" onclick="updateuser
                             ('${u.SUBITEM.SUBITME1.id}','${u.SUBITEM.SUBITME1.SUBITEMNAME}','${u.ITEMNAME}','${u.SUBITEM.SUBITME1.PRICE}'
-                            ,'${u.SUBITEM.SUBITME2.id}','${u.SUBITEM.SUBITME2.SUBITEMNAME}','${u.SUBITEM.SUBITME2.PRICE}','${u.SUBITEM.SUBITME2.QUANTITY}')"></td></tr>
+                            ,'${u.SUBITEM.SUBITME2.id}','${u.SUBITEM.SUBITME2.SUBITEMNAME}','${u.SUBITEM.SUBITME2.PRICE}','${u.SUBITEM.SUBITME2.QUANTITY}' )"></td></tr>
                             <tr><td>${u.SUBITEM.SUBITME2.SUBITEMNAME}  PRICE-${u.SUBITEM.SUBITME2.PRICE}
-                                <input id="edit1" type="button" name="edit" value="+" onclick="myplusfunction('${u.SUBITEM.SUBITME2.id}')">
-                            <input id="edit1" type="button" name="edit" value="-" onclick="myminusfunction('${u.SUBITEM.SUBITME2.id}')">
-                            <input id='textfield${u.SUBITEM.SUBITME2.id}' type="number" name="textfield" value="0" size="1" min="0">VALUE</input>
-                            <input id="addtocart" type="button" name="addtocart" value="ADD TO CART" onclick="updateuser
+                                <input id="edit1" type="button" name="edit" value="+" onclick="myplusfunction('${u.SUBITEM.SUBITME2.id}','${u.SUBITEM.SUBITME2.PRICE}')">
+                            <input id="edit1" type="button" name="edit" value="-" onclick="myminusfunction('${u.SUBITEM.SUBITME2.id}','${u.SUBITEM.SUBITME2.PRICE}')">
+                            <input id='textfield${u.SUBITEM.SUBITME2.id}' type="number" name="textfield" value="0" size="0" min="0">VALUE</input>
+                            <input id="addtocart${u.SUBITEM.SUBITME2.id}" type="button" disabled name="addtocart" value="ADD TO CART" onclick="updateuser
                             ('${u.SUBITEM.SUBITME2.id}','${u.SUBITEM.SUBITME2.SUBITEMNAME}','${u.ITEMNAME}','${u.SUBITEM.SUBITME2.PRICE}'
-                            ,'${u.SUBITEM.SUBITME1.id}','${u.SUBITEM.SUBITME1.SUBITEMNAME}','${u.SUBITEM.SUBITME1.PRICE}','${u.SUBITEM.SUBITME1.QUANTITY}')"><hr></td></tr>   
+                            ,'${u.SUBITEM.SUBITME1.id}','${u.SUBITEM.SUBITME1.SUBITEMNAME}','${u.SUBITEM.SUBITME1.PRICE}','${u.SUBITEM.SUBITME1.QUANTITY}' )"><hr></td></tr>   
                         </tr>`
             });
             const _table = `<table>
@@ -134,52 +133,36 @@
                             </table>`
             document.getElementById('userss').innerHTML = _table;
         }
-        
-       function myplusfunction(string){
+       function myplusfunction(string,string1){
+        document.getElementById(`addtocart${string}`).disabled = false;
            let num=parseInt(document.getElementById(`textfield${string}`).value);
             num=num+1;
-            document.getElementById(`textfield${string}`).value=num;         
+            document.getElementById(`textfield${string}`).value=num;      
         }
-        function myminusfunction(string){
+        function myminusfunction(string,string1){
             let num=parseInt(document.getElementById(`textfield${string}`).value);
+            let price=parseInt((string1));
+            if(num == 1){
             num=num-1;
-            document.getElementById(`textfield${string}`).value=num;         
+            document.getElementById(`textfield${string}`).value=num;
+            document.getElementById(`addtocart${string}`).disabled = true;
+            } 
+            else{
+            if(num>0){     
+            num=num-1;
+            document.getElementById(`textfield${string}`).value=num;  
+            }}        
         }
-        const createTableprojects = (data)=>{
-            console.log(data);
-            let rows = '';
-            data.projects.forEach(u => {
-                rows += `<tr>
-                            <td>${u.ITEMNAME}</td>
-                            <td>${u.SUBITEM.SUBITME.SUBITEMNAME}</td>
-                            <td>${u.SUBITEM.SUBITME.QUANTITY}</td>
-                            <td>${u.SUBITEM.SUBITME.PRICE}</td>
-                        </tr>`
-            });
-            const _projecttable = `<table border="1">
-                               
-                                ${rows}
-                            </table>`
-            document.getElementById('projectslist').innerHTML = _projecttable;
-        }
-         
-        </script>
+         </script>
     </head>
     <body onload="getUsers()">
+        <a href="cart.html"> <img src="cart.png" alt="your cart" height="40px" width="40px"></a>
         <fieldset>
             <legend>HOME PAGE</legend>
             <div id="userss"></div>
         </fieldset>
-        <fieldset><legend>
-            CART
-        </legend>
-        <div id="projectslist"></div>
-    </fieldset>
-    <fieldset>
-        <legend>PROCEED</legend>
-        TOTAL-<div id="buy"></div>
-    </fieldset>
-
-    </div>
+        <legend>FINAL</legend>
+    TOTAL-
+    <input type="text" size="1" id="buy">
     </body>
 </html>

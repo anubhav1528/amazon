@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <script>
+        let total=0;
+        let content='<h2 align="center">your invoice</h2><br>';
+        function showcart(){
+            const _urlpro = 'http://localhost:1269/projects';
+            fetch(_urlpro,{
+                headers:{
+                        'username' : 'tech',
+                        'password' : 'tech'
+            }})
+            .then(res=>res.json())
+            .then((res)=>{
+                createTableprojects(res)
+        })
+        }
+         function sendEmail(){
+           email =  document.getElementById('email').value
+            const baseUrl = 'http://localhost:1269/users';
+            fetch(baseUrl+'/email',{
+                    method : 'POST',
+                    headers:{
+                        'username' : 'tech',
+                        'password' : 'tech',
+                        'content-type': 'application/json'
+                    },
+                    body:JSON.stringify({
+                        email: email,
+                        CONTENT: content
+                        })
+                })
+                .then(response=>response.json())
+                .then((res)=>{
+                    const baseUrl = 'http://localhost:1269/projects';
+                   fetch(baseUrl+'/delete',{
+                    headers:{
+                        'username' : 'tech',
+                        'password' : 'tech',
+                        'content-type': 'application/json'
+                    }})
+                    .then(res=>res.json())
+                    .then((res)=>{
+                        alert('thanks for shopping.continue shopping');
+                        document.location = 'users.html'
+                    })
+                })
+        }
+        function redirect(){
+            document.location='users.html'
+        }
+
+        const createTableprojects = (data)=>{
+            console.log(data);
+            let rows = '';
+            data.projects.forEach(u => {
+                rows += `<tr>
+                            <td>${u.ITEMNAME}</td>
+                            <td>${u.SUBITME.SUBITEMNAME}</td>
+                            <td>${u.SUBITME.QUANTITY}</td>
+                            <td>${u.SUBITME.PRICE}</td>
+                        </tr>`
+                        total=total+parseInt(u.SUBITME.PRICE);
+            });
+            const _projecttable = `<table border="1">
+                               
+                                ${rows}
+                            </table>`
+            document.getElementById('projectslist').innerHTML = _projecttable;
+            document.getElementById('total').value = total;
+            content = content + _projecttable +'YOUR TOTAL BILL IS:' + total;
+            console.log(content)
+        }
+    </script>
+</head>
+<body onload="showcart()">
+    <fieldset><legend>
+        CART
+    </legend>
+    <div id="projectslist"></div>
+</fieldset>
+<fieldset>
+    TOTAL-<input type="text" name="" id="total">
+    <input type="email" name="" id="email" placeholder="enter your email">
+    <input type="button" id="button" value="WANT TO SHOP MORE" onclick="redirect()">
+    <input type="button" id="button" value="PROCEED TO BUY" onclick="sendEmail()">
+</body>
+</html>

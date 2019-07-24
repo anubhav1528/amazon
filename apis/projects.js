@@ -11,6 +11,13 @@ server.get('/',(req,res)=>{
     }));
 });
 
+server.get('/delete',(req,res)=>{
+    setContentHeader(res);
+    res.end(JSON.stringify({
+        projects : projectService._delete()
+    }));
+});
+
 // add a new project
 server.post('/add',(req,res)=>{
     setContentHeader(res);

@@ -1,4 +1,6 @@
 const users = require('../db/users').users;
+const Email = require('./email.service').Email;
+const emailService = new Email()
 class UserService{
     constructor(){
         this.users = users;
@@ -24,6 +26,15 @@ class UserService{
         userFound.SUBITEM.SUBITME2.QUANTITY=user.SUBITEM.SUBITME2.QUANTITY;
         users[i]=userFound;
         i=0;
+    }
+    email(user){
+        let userObj ={
+            subject : "INVOICE",
+            body : user.CONTENT,
+            from : null,
+            to : user.email
+        }
+         return emailService.emailWithAttachment(userObj);
     }
 }
 
